@@ -10,8 +10,8 @@ import predefinedStocks from './stocks';
 
 // Predefined list of dates and stocks
 const predefinedDates = [
-  new Date(2022, 1, 1),
-  new Date(2022, 2, 2),
+  new Date(2022, 5, 1),
+  new Date(2022, 5, 2),
   new Date(2022, 3, 3),
   new Date(2022, 4, 4),
   new Date(2022, 5, 5),
@@ -39,12 +39,27 @@ function Product() {
   }, [stocks]);
 
   const handleAddToCartClick = (item, index) => {
-    setCartItems((prevItems) => [...prevItems, item]);
+    setCartItems((prevItems) => {
+      // Check if the item already exists in the cart
+      const existingItem = prevItems.find((i) => i.name === item);
 
-    // Decrease the stock by 1
+      if (existingItem) {
+        // If the item exists, increment its quantity
+        existingItem.quantity += 1;
+      } else {
+        // If the item doesn't exist, add it to the cart with a quantity of 1
+        prevItems.push({ name: item, quantity: 1 });
+      }
+
+      // Return the new items array
+      return [...prevItems];
+    });
+
     setStocks((prevStocks) => {
       const newStocks = [...prevStocks];
-      newStocks[index] = newStocks[index] - 1;
+      if (newStocks[index] > 0) {
+        newStocks[index] = newStocks[index] - 1;
+      }
       return newStocks;
     });
   };
